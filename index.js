@@ -1,6 +1,5 @@
 const express = require("express");
-const createEvent = require("./actions/events.actions");
-const morgan = require("morgan");
+const { createEvent, getAllEvents } = require("./actions/events.actions");
 
 //Load env varibles
 require("dotenv").config();
@@ -8,9 +7,6 @@ const app = express();
 
 //Parse json in express app
 app.use(express.json());
-
-// Use morgan to log all requests
-app.use(morgan("tiny"));
 
 //Post an event
 app.post("/events", async (req, res) => {
@@ -21,11 +17,20 @@ app.post("/events", async (req, res) => {
   }
 
   const event = await createEvent(name, location, price, description);
-  if (event.success) {
-    res.status(201).json({ message: "Event created successfully" });
+  if (event) {
+    res.status(201).json({ message: "Event created successfully", event: event });
   }
 });
 
 app.listen(5000, () => {
   console.log("Server running successfully on http://localhost:5000");
+});
+
+//Get all events
+app.get("/events", async (req, res) => {
+  const events = await getAllEvents();
+
+  if (events) {
+    res.status(201).json({ data: events });
+  }
 });
