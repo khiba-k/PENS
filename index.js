@@ -22,10 +22,6 @@ app.post("/events", async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server running successfully on http://localhost:5000");
-});
-
 //Get all events
 app.get("/events", async (req, res) => {
   const events = await getAllEvents();
@@ -34,3 +30,8 @@ app.get("/events", async (req, res) => {
     res.status(201).json({ data: events });
   }
 });
+
+app.listen(5000, () => {
+  console.log("Server running successfully on http://localhost:5000");
+});
+
