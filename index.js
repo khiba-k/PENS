@@ -10,28 +10,39 @@ app.use(express.json());
 
 //Post an event
 app.post("/events", async (req, res) => {
-  const { name, location, price, description } = req.body;
+  try {
+    const { name, location, price, description } = req.body;
 
-  if (!name || !location || !price || !description) {
-    return res.status(400).json({ message: "Missing inputs" });
-  }
+    if (!name || !location || !price || !description) {
+      return res.status(400).json({ message: "Missing inputs" });
+    }
 
-  const event = await createEvent(name, location, price, description);
-  if (event) {
-    res.status(201).json({ message: "Event created successfully", event: event });
+    const event = await createEvent(name, location, price, description);
+    if (event) {
+      res
+        .status(201)
+        .json({ message: "Event created successfully", event: event });
+    }
+  } catch (error) {
+    console.error("Error creating event:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 //Get all events
 app.get("/events", async (req, res) => {
-  const events = await getAllEvents();
+  try {
+    const events = await getAllEvents();
 
-  if (events) {
-    res.status(201).json({ data: events });
+    if (events) {
+      res.status(201).json({ data: events });
+    }
+  } catch (error) {
+    console.error("Error fetching events: ", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 app.listen(5000, () => {
   console.log("Server running successfully on http://localhost:5000");
 });
-
